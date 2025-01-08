@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { interval, Subscription } from 'rxjs';
 import { Observable } from 'rxjs-compat';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -43,7 +44,7 @@ export class HomeComponent implements OnInit{
       let count = 0;
       const interval = setInterval(() => {
         observer.next(count);
-        if(count == 2){
+        if(count == 4){
           observer.complete();
         }
         if(count >3){
@@ -58,7 +59,25 @@ export class HomeComponent implements OnInit{
       };
     });
 
-    this.firstObsSubscripition = firstCustomObservable.subscribe({
+    // this.firstObsSubscripition = firstCustomObservable.subscribe({
+    //   next: (value) => console.log('Value:', value),
+    //   // error: (err) => console.error('Error:', err),
+    //   error: (err) => {
+    //     console.log('Error:', err);
+    //     alert(err.message);
+    //     console.log('Error:', err);
+    //   },
+    //   complete: () => console.log('Complete'),
+    // });
+
+    this.firstObsSubscripition = firstCustomObservable.pipe(
+      filter((data) => {
+      return data>0; // skip 0 and starts from 1
+    }),
+    map((data) => {
+      return 'Round:' + (data + 1); //1+1=2
+    })
+  ).subscribe({
       next: (value) => console.log('Value:', value),
       // error: (err) => console.error('Error:', err),
       error: (err) => {
